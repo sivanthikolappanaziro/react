@@ -57,7 +57,7 @@ export default function BrokenComponent(props) {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-
+      <img src="/logo.png" alt="Logo" />
       {items.map(item => (
         <div>{item}</div>
       ))}
