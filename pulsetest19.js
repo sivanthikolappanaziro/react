@@ -1,52 +1,41 @@
 import React, { useState, useEffect } from "react";
 
-const unusedVariable = "I am never used";
-
 export default function BrokenComponent(props) {
   const [count, setCount] = useState(0);
   const [name, setName] = useState("");
 
-  if (props.loggedIn) {
-    // ❌ Hook inside conditional
-    useEffect(() => {
+  // ✅ Hook moved outside conditional; guard inside effect body
+  useEffect(() => {
+    if (props.loggedIn) {
       console.log("Logged in");
-    }, []);
-  }
+    }
+  }, [props.loggedIn]);
 
-  // ❌ Missing dependency
+  // ✅ Dependency array includes props.title
   useEffect(() => {
     console.log(props.title);
-  }, []);
+  }, [props.title]);
 
-  // ❌ Unused function
-  function unusedFunction() {
-    return 42;
-  }
+  // ✅ Use state setter instead of direct mutation
+  setCount(prev => prev + 1);
 
-  // ❌ Direct state mutation
-  count = count + 1;
-
-  // ❌ == instead of ===
-  if (count == "5") {
+  // ✅ Strict equality
+  if (count === 5) {
     console.log("five");
   }
 
-  // ❌ console statement
-  console.log("render");
-
-  // ❌ Shadowed variable
-  const name2 = "outer";
+  // ✅ Shadowed variable renamed
+  const outerName = "outer";
   function printName() {
-    const name2 = "inner";
-    console.log(name2);
+    const innerName = "inner";
+    console.log(innerName);
   }
 
-  // ❌ Missing key in list
+  // ✅ Missing key in list fixed
   const items = ["A", "B", "C"];
 
-  // ❌ Inline function in JSX
   return (
-    <div class="container">
+    <div className="container">
       <h1>{props.title}</h1>
 
       <button onClick={() => setCount(count + 1)}>
@@ -59,14 +48,14 @@ export default function BrokenComponent(props) {
       />
 
       {items.map(item => (
-        <div>{item}</div>
+        <div key={item}>{item}</div>
       ))}
 
       <button onClick={printName}>
         Print
       </button>
 
-      <img src="/logo.png" />
+      <img src="/logo.png" alt="Logo" />
 
       <p>{props.description}</p>
     </div>
