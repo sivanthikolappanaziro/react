@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "pulse-code-intel": {
+      "type": "sse",
+      "url": "http://172.30.32.215:8081/api/v1/pulse/mcp/v1/sse",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3ODI4MDUxOTgsImlhdCI6MTc4MjgwNDI5OCwic2NvcGUiOiJwdWxzZV9ydW5uZXJfam9iIiwic2Vzc2lvbl9pZCI6IjllZGFiMGE0LTQ4NTQtNDExZS04MjEwLWE3ZjExZDkyODg3YiIsInRlbmFudF9pZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMSIsInVzZXJfaWQiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDEifQ.K0fBw-TKdgPopwmkR3IJ4jLMO0VViGfUTHzt3TJ3DMc"
+      },
+      "alwaysAllow": [
+        "code_search_keyword",
+        "code_search_semantic",
+        "code_symbol_lookup",
+        "code_callers_analysis",
+        "code_references_analysis",
+        "code_impact_analysis",
+        "code_list_package_deps",
+        "code_bundle_repomix",
+        "code_cross_service_deps",
+        "code_review_context",
+        "datasource_introspect",
+        "canvas_mcp_list_tools",
+        "canvas_mcp_execute_tool"
+      ],
+      "timeout": 120
+    }
+  }
+}
