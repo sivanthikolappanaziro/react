@@ -1,52 +1,39 @@
 import React, { useState, useEffect } from "react";
 
-const unusedVariable = "I am never used";
-
 export default function BrokenComponent(props) {
   const [count, setCount] = useState(0);
   const [name, setName] = useState("");
 
-  if (props.loggedIn) {
-    // ❌ Hook inside conditional
-    useEffect(() => {
+  // FIX #1: useEffect moved outside conditional; condition gated inside effect body
+  useEffect(() => {
+    if (props.loggedIn) {
       console.log("Logged in");
-    }, []);
-  }
+    }
+  }, [props.loggedIn]);
 
-  // ❌ Missing dependency
+  // FIX #3: dependency array now includes props.title
   useEffect(() => {
     console.log(props.title);
-  }, []);
+  }, [props.title]);
 
-  // ❌ Unused function
-  function unusedFunction() {
-    return 42;
-  }
-
-  // ❌ Direct state mutation
-  count = count + 1;
-
-  // ❌ == instead of ===
-  if (count == "5") {
+  // FIX #9: strict equality
+  if (count === 5) {
     console.log("five");
   }
 
-  // ❌ console statement
-  console.log("render");
-
-  // ❌ Shadowed variable
+  // FIX #11: inner variable renamed to innerName to avoid shadowing
   const name2 = "outer";
   function printName() {
-    const name2 = "inner";
-    console.log(name2);
+    const innerName = "inner";
+    console.log(innerName);
   }
 
-  // ❌ Missing key in list
+  // FIX #5: items defined for the list
   const items = ["A", "B", "C"];
 
-  // ❌ Inline function in JSX
   return (
-    <div class="container">
+    // FIX #4: class → className
+    <div className="container">
       <h1>{props.title}</h1>
 
       <button onClick={() => setCount(count + 1)}>
@@ -58,15 +45,17 @@ export default function BrokenComponent(props) {
         onChange={(e) => setName(e.target.value)}
       />
 
+      {/* FIX #5: key prop added to list items */}
       {items.map(item => (
-        <div>{item}</div>
+        <div key={item}>{item}</div>
       ))}
 
       <button onClick={printName}>
         Print
       </button>
 
-      <img src="/logo.png" />
+      {/* FIX #6: alt attribute added */}
+      <img src="/logo.png" alt="Company logo" />
 
       <p>{props.description}</p>
     </div>
