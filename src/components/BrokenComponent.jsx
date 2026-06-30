@@ -1,52 +1,44 @@
 import React, { useState, useEffect } from "react";
 
-const unusedVariable = "I am never used";
-
 export default function BrokenComponent(props) {
   const [count, setCount] = useState(0);
   const [name, setName] = useState("");
 
-  if (props.loggedIn) {
-    // ❌ Hook inside conditional
-    useEffect(() => {
+  // ✅ Hook moved outside conditional; guard logic inside effect body
+  useEffect(() => {
+    if (props.loggedIn) {
       console.log("Logged in");
-    }, []);
-  }
+    }
+  }, [props.loggedIn]);
 
-  // ❌ Missing dependency
+  // ✅ Added props.title to dependency array
   useEffect(() => {
     console.log(props.title);
-  }, []);
+  }, [props.title]);
 
-  // ❌ Unused function
-  function unusedFunction() {
-    return 42;
+  // ✅ Removed unusedFunction
+
+  // ✅ Removed direct state mutation (count = count + 1)
+
+  // ✅ Strict equality
+  if (count === 5) {
+    // count is 5
   }
 
-  // ❌ Direct state mutation
-  count = count + 1;
+  // ✅ Removed console.log("render")
 
-  // ❌ == instead of ===
-  if (count == "5") {
-    console.log("five");
-  }
-
-  // ❌ console statement
-  console.log("render");
-
-  // ❌ Shadowed variable
-  const name2 = "outer";
+  // ✅ Renamed outer variable to avoid shadowing
+  const componentName = "outer";
   function printName() {
     const name2 = "inner";
     console.log(name2);
   }
 
-  // ❌ Missing key in list
+  // ✅ Added key prop to list items
   const items = ["A", "B", "C"];
 
-  // ❌ Inline function in JSX
   return (
-    <div class="container">
+    <div className="container">
       <h1>{props.title}</h1>
 
       <button onClick={() => setCount(count + 1)}>
@@ -59,14 +51,14 @@ export default function BrokenComponent(props) {
       />
 
       {items.map(item => (
-        <div>{item}</div>
+        <div key={item}>{item}</div>
       ))}
 
       <button onClick={printName}>
         Print
       </button>
 
-      <img src="/logo.png" />
+      <img src="/logo.png" alt="Logo" />
 
       <p>{props.description}</p>
     </div>
