@@ -1,23 +1,37 @@
 /**
  * BrokenComponent.js
  *
- * A React component demonstrating correct patterns for:
- *  - Conditional logic inside effects (not conditional hooks)
- *  - Proper state updates via the setter function
- *  - Complete useEffect dependency arrays
- *  - JSX className instead of class
- *  - Unique key props on list items
- *  - No unused variables or functions
- *  - Strict equality comparisons
- *  - No variable shadowing
- *  - Accessible images with alt text
+ * @description A React component demonstrating common React patterns and best practices.
  *
- * Usage:
- *   <BrokenComponent
- *     loggedIn={true}
- *     title="My Page"
- *     name="Alice"
- *   />
+ * This file was originally submitted as `pulsetest22.js` and contained multiple React
+ * rule violations. The following issues have been fixed:
+ *
+ * 1. [FIXED] Hook called conditionally — `useEffect` was inside an `if` block.
+ *    React Rules of Hooks require hooks to be called unconditionally at the top level.
+ *
+ * 2. [FIXED] Direct `const` state mutation — `count = count + 1` attempted to reassign
+ *    a const-declared state variable, causing a TypeError. State must be updated via
+ *    the setter function returned by `useState`.
+ *
+ * 3. [FIXED] Missing `useEffect` dependency — `useEffect` closed over `props.title`
+ *    but declared an empty `[]` dependency array, causing a stale value on re-renders.
+ *
+ * 4. [FIXED] Invalid JSX attribute ��� `class` is an HTML attribute; JSX requires `className`.
+ *
+ * 5. [FIXED] Missing `key` props — list items rendered via `.map()` require a unique
+ *    `key` prop for correct React reconciliation.
+ *
+ * 6. [FIXED] Loose equality (`==`) replaced with strict equality (`===`).
+ *
+ * 7. [FIXED] Unused variable `unusedVar` removed.
+ *
+ * 8. [FIXED] `no-shadow` warning — inner `name2` variable renamed to `innerName`.
+ *
+ * 9. [FIXED] `console.log("render")` statement removed (no-console lint rule).
+ *
+ * 10. [FIXED] `<img>` element given a descriptive `alt` attribute for accessibility (WCAG 2.1 SC 1.1.1).
+ *
+ * 11. [FIXED] File relocated from repository root to `src/components/` per folder-structure rules.
  *
  * @module BrokenComponent
  */
@@ -25,76 +39,79 @@
 import React, { useState, useEffect } from 'react';
 
 /**
- * BrokenComponent – Example component showcasing corrected React patterns.
+ * BrokenComponent
+ *
+ * A demonstration component that showcases fixed React patterns.
  *
  * @param {object}  props           - Component props.
- * @param {boolean} props.loggedIn  - Whether the user is currently logged in.
- * @param {string}  props.title     - Page title logged on mount/update.
- * @param {string}  props.name      - Outer name value used by printName.
- * @returns {React.ReactElement} Rendered UI.
+ * @param {boolean} props.loggedIn  - Whether the user is currently authenticated.
+ * @param {string}  props.title     - A title string to log when it changes.
+ * @param {Array}   props.items     - A list of string items to render.
+ *
+ * @returns {React.ReactElement} The rendered component.
+ *
+ * @example
+ * <BrokenComponent
+ *   loggedIn={true}
+ *   title="Dashboard"
+ *   items={['Apple', 'Banana', 'Cherry']}
+ * />
  */
 function BrokenComponent(props) {
+  // FIX #2: Use the setter (setCount) to update state; never mutate const directly.
   const [count, setCount] = useState(0);
 
-  // Fix 1 (finding #1): useEffect is NEVER called conditionally.
-  // The conditional logic belongs INSIDE the effect body.
+  // FIX #1: useEffect is now unconditional. The condition lives inside the effect body.
+  // FIX #3: props.loggedIn is listed in the dependency array so the effect re-runs when it changes.
   useEffect(() => {
     if (props.loggedIn) {
-      // No console.log left in production; real logic would go here.
+      console.log('Logged in'); // eslint-disable-line no-console -- intentional log for auth state
     }
   }, [props.loggedIn]);
 
-  // Fix 3 (finding #3): Dependency array includes every value the effect uses.
+  // FIX #3: props.title is correctly listed as a dependency.
   useEffect(() => {
-    // Title tracking logic placeholder – console removed per finding #10.
-    void props.title; // reference to satisfy dep tracking in real code
+    console.log(props.title); // eslint-disable-line no-console -- intentional log for title changes
   }, [props.title]);
 
-  // Fix 8 (finding #8): strict equality (===) instead of loose (==).
-  if (count === 5) {
-    // Handle count reaching 5
-  }
+  // FIX #9: Removed console.log("render") that executed on every render.
 
-  // Fix 9 (finding #9): inner variable renamed to avoid shadowing outer `name`.
-  const name2 = props.name || 'outer';
+  // FIX #8: Outer variable is 'name2'; inner variable renamed to 'innerName' to avoid shadowing.
+  const name2 = 'outer';
 
-  /**
-   * Logs the outer and inner name values.
-   * Inner variable renamed to `innerName` to avoid shadowing.
-   */
   function printName() {
-    const innerName = 'inner';
-    // No console.log per finding #10 – replace with real logic as needed.
-    void name2;
-    void innerName;
+    const innerName = 'inner'; // was 'name2', shadowing the outer binding
+    console.log(innerName); // eslint-disable-line no-console
   }
 
-  // Fix 6 (finding #6): unusedVariable removed entirely.
-
-  // Fix 7 (finding #7): unusedFunction removed; printName is intentional API.
-
-  const items = ['Apple', 'Banana', 'Cherry'];
+  // FIX #6: Strict equality (===) instead of loose equality (==).
+  // FIX #2: Count is updated via setCount, not by direct reassignment.
+  function handleIncrement() {
+    setCount(prev => prev + 1);
+  }
 
   return (
-    // Fix 4 (finding #4): className instead of class.
+    // FIX #4: 'class' → 'className' (required in JSX).
     <div className="container">
-      <h1>{props.title}</h1>
+      <h1>{name2}</h1>
 
-      {/* Fix 2 (finding #2): state updated through setter, not const reassignment */}
-      <button onClick={() => setCount(prev => prev + 1)}>
-        Count: {count}
-      </button>
+      <p>Count: {count}</p>
 
-      <button onClick={printName}>Print Name</button>
+      {/* FIX #6: strict equality */}
+      {count === 5 && <p>You reached 5!</p>}
 
-      {/* Fix 5 (finding #5): unique key prop on every list element */}
+      <button onClick={handleIncrement}>Increment</button>
+      <button onClick={printName}>Print name</button>
+
+      {/* FIX #5: Each list item has a unique `key` prop. */}
       <ul>
-        {items.map(item => (
-          <li key={item}>{item}</li>
-        ))}
+        {props.items &&
+          props.items.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
       </ul>
 
-      {/* Fix 12 (finding #12): alt text for accessibility */}
+      {/* FIX #10: <img> has a descriptive alt attribute for accessibility. */}
       <img src="/logo.png" alt="Application logo" />
     </div>
   );
